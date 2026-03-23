@@ -82,10 +82,21 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
         <ContextSelector />
-        {activeTab === 'cite' ? <CiteSource /> : <SearchCite />}
-        <TestCasesPanel />
+
+        {activeTab === 'cite' ? (
+          <section className="grid xl:grid-cols-3 gap-6 items-start">
+            <div className="xl:col-span-2">
+              <CiteSource />
+            </div>
+            <div className="xl:col-span-1">
+              <TestCasesPanel />
+            </div>
+          </section>
+        ) : (
+          <SearchCite />
+        )}
 
         <div className="pt-12 border-t border-slate-200">
           <ReferenceSources />

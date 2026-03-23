@@ -27,79 +27,77 @@ export default function TestCasesPanel() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-5">
-        <div>
-          <h2 className="text-xl font-semibold text-slate-900 mb-2 flex items-center gap-2">
-            <ClipboardList className="w-5 h-5 text-indigo-600" />
-            Validation suite · 50 cases
-          </h2>
-          <p className="text-slate-600 max-w-3xl">
-            This is now a real test harness surface: each case has a concrete input prompt, an expected citation, and a one-click way to load that prompt into the app.
-          </p>
-        </div>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Filter by case, statute, citation, number, or context..."
-          className="w-full md:w-96 px-4 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-sm"
-        />
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 md:p-6 h-fit">
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-slate-900 mb-1 flex items-center gap-2">
+          <ClipboardList className="w-4 h-4 text-indigo-600" />
+          Validation suite · 50
+        </h2>
+        <p className="text-sm text-slate-600">
+          Compact manual test cases with expected citations.
+        </p>
       </div>
 
-      <div className="space-y-4 max-h-[950px] overflow-auto pr-1">
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Filter tests..."
+        className="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-sm mb-4"
+      />
+
+      <div className="space-y-3 max-h-[860px] overflow-auto pr-1">
         {filtered.map((item) => (
-          <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div className="space-y-3 min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white text-sm font-semibold">
-                    {item.id}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 capitalize">
-                    {item.context}
-                  </span>
-                </div>
+          <div key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-semibold shrink-0">
+                  {item.id}
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-indigo-50 text-indigo-700 capitalize shrink-0">
+                  {item.context}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => loadIntoCiteSource(item.prompt, item.context)}
+                className="inline-flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors shrink-0"
+                title="Load this prompt into Cite Source"
+              >
+                <SendHorizontal className="w-3.5 h-3.5" />
+                Load
+              </button>
+            </div>
 
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Input prompt</h3>
-                  <p className="text-slate-800 leading-relaxed">{item.prompt}</p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Expected citation</h3>
-                  <div className="p-4 bg-white rounded-xl border border-slate-200">
-                    <p className="text-lg font-serif text-slate-900 break-words">{item.expected}</p>
-                  </div>
-                </div>
+            <div className="space-y-2">
+              <div>
+                <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Input</div>
+                <p className="text-sm text-slate-800 leading-relaxed">{item.prompt}</p>
               </div>
 
-              <div className="flex flex-col gap-2 shrink-0 lg:w-52">
-                <button
-                  type="button"
-                  onClick={() => loadIntoCiteSource(item.prompt, item.context)}
-                  className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
-                >
-                  <SendHorizontal className="w-4 h-4" />
-                  Load into Cite Source
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(item.prompt)}
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-700 px-4 py-2.5 rounded-xl font-medium transition-colors border border-slate-200"
-                >
-                  <Copy className="w-4 h-4" />
-                  Copy prompt
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(item.expected)}
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-700 px-4 py-2.5 rounded-xl font-medium transition-colors border border-slate-200"
-                >
-                  <Copy className="w-4 h-4" />
-                  Copy expected
-                </button>
+              <div>
+                <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Expected</div>
+                <p className="text-sm font-serif text-slate-900 leading-relaxed break-words">{item.expected}</p>
               </div>
+            </div>
+
+            <div className="flex gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => navigator.clipboard.writeText(item.prompt)}
+                className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors border border-slate-200"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                Prompt
+              </button>
+              <button
+                type="button"
+                onClick={() => navigator.clipboard.writeText(item.expected)}
+                className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors border border-slate-200"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                Expected
+              </button>
             </div>
           </div>
         ))}
