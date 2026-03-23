@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CiteSource from './components/CiteSource';
 import SearchCite from './components/SearchCite';
 import ReferenceSources from './components/ReferenceSources';
 import ApiKeyManager from './components/ApiKeyManager';
-import { FIXED_MODEL_LABEL } from './services/gemini';
+import ContextSelector from './components/ContextSelector';
+import TestCasesPanel from './components/TestCasesPanel';
+import { DEFAULT_CONTEXT, FIXED_MODEL_LABEL, getCitationContext, type CitationContext } from './services/gemini';
 import { Scale, Search, PenTool } from 'lucide-react';
 
 type Tab = 'cite' | 'search';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('cite');
+  const [context, setContext] = useState<CitationContext>(getCitationContext());
+
+  useEffect(() => {
+    const sync = () => setContext(getCitationContext());
+    window.addEventListener('bluebook-context-changed', sync);
+    return () => window.removeEventListener('bluebook-context-changed', sync);
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
@@ -27,6 +36,9 @@ export default function App() {
                   </h1>
                   <p className="text-sm text-slate-500 mt-0.5 break-words">
                     Powered by <span className="font-semibold text-slate-700">{FIXED_MODEL_LABEL}</span>
+                    {' · '}
+                    Context: <span className="font-semibold text-slate-700 capitalize">{context}</span>
+                    {context === DEFAULT_CONTEXT && <span className="text-slate-500"> (default)</span>}
                   </p>
                 </div>
               </div>
@@ -38,7 +50,7 @@ export default function App() {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <p className="text-sm text-slate-600 max-w-3xl">
-                This app is now fixed to Gemini 3 Flash Preview so testing stays consistent and you can judge the app itself instead of model-switching behavior.
+                This app is fixed to Gemini 3 Flash Preview, but it now lets us clarify the writing context. Default behavior is litigation-first for Rose instead of assuming law-review writing.
               </p>
 
               <nav className="flex space-x-1 bg-slate-100 p-1 rounded-xl w-fit">
@@ -71,7 +83,9 @@ export default function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+        <ContextSelector />
         {activeTab === 'cite' ? <CiteSource /> : <SearchCite />}
+        <TestCasesPanel />
 
         <div className="pt-12 border-t border-slate-200">
           <ReferenceSources />
