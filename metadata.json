@@ -1,0 +1,5 @@
+{
+  "name": "Bluebook Citation Assistant",
+  "description": "An AI-powered legal citation tool that ingests sources, identifies their type, and generates accurate Bluebook citations. It also features a search function to find and cite legal sources.",
+  "requestFramePermissions": []
+}
