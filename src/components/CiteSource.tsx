@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { citeSource, CitationResult } from '../services/gemini';
 import { BookOpen, Loader2, FileText, Info, List } from 'lucide-react';
 
@@ -7,6 +7,21 @@ export default function CiteSource() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CitationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const custom = event as CustomEvent<{ prompt?: string; mode?: string }>;
+      if (custom.detail?.mode === 'cite' && custom.detail?.prompt) {
+        setText(custom.detail.prompt);
+        setResult(null);
+        setError(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('bluebook-load-test-case', handler as EventListener);
+    return () => window.removeEventListener('bluebook-load-test-case', handler as EventListener);
+  }, []);
 
   const handleCite = async () => {
     if (!text.trim()) return;
@@ -31,7 +46,7 @@ export default function CiteSource() {
           Ingest & Cite Source
         </h2>
         <p className="text-slate-600 mb-6">
-          Paste the text of a legal source (e.g., a case snippet, statute text, or article excerpt) below. The AI will analyze it, determine the source type, and generate a Bluebook citation.
+          Paste source text or load a validation-suite prompt below. The AI will analyze it, determine the source type, and generate a Bluebook citation.
         </p>
 
         <div className="space-y-4">
