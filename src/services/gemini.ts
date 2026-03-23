@@ -1,42 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { REFERENCE_URLS } from "../constants";
 
-export type GeminiModelId =
-  | "gemini-3.1-pro-preview"
-  | "gemini-3-flash-preview"
-  | "gemini-2.5-pro"
-  | "gemini-2.5-flash";
+export type GeminiModelId = "gemini-3-flash-preview";
 
-export interface ModelOption {
-  id: GeminiModelId;
-  label: string;
-  notes: string;
-}
+export const FIXED_MODEL_ID: GeminiModelId = "gemini-3-flash-preview";
+export const FIXED_MODEL_LABEL = "Gemini 3 Flash Preview";
 
-export const MODEL_OPTIONS: ModelOption[] = [
-  {
-    id: "gemini-3.1-pro-preview",
-    label: "Gemini 3.1 Pro Preview",
-    notes: "Most ambitious option here, but also the most likely to hit preview/capacity turbulence.",
-  },
-  {
-    id: "gemini-3-flash-preview",
-    label: "Gemini 3 Flash Preview",
-    notes: "Faster preview flash model. Good for comparison against 3.1 Pro.",
-  },
-  {
-    id: "gemini-2.5-pro",
-    label: "Gemini 2.5 Pro",
-    notes: "Stable higher-intelligence baseline for tougher citation tasks.",
-  },
-  {
-    id: "gemini-2.5-flash",
-    label: "Gemini 2.5 Flash",
-    notes: "Best first stop for reliability and speed testing.",
-  },
-];
-
-const MODEL_STORAGE_KEY = "BLUEBOOK_MODEL";
 const API_KEY_STORAGE_KEY = "GEMINI_API_KEY";
 
 export function getStoredApiKey() {
@@ -44,16 +13,7 @@ export function getStoredApiKey() {
 }
 
 export function getSelectedModel(): GeminiModelId {
-  const stored = localStorage.getItem(MODEL_STORAGE_KEY) as GeminiModelId | null;
-  if (stored && MODEL_OPTIONS.some((model) => model.id === stored)) {
-    return stored;
-  }
-  return "gemini-2.5-flash";
-}
-
-export function setSelectedModel(model: GeminiModelId) {
-  localStorage.setItem(MODEL_STORAGE_KEY, model);
-  window.dispatchEvent(new Event("bluebook-model-changed"));
+  return FIXED_MODEL_ID;
 }
 
 function getAI() {
@@ -77,7 +37,7 @@ function normalizeError(err: any, model: GeminiModelId) {
   const message = err?.message || "Unknown Gemini API error.";
   if (message.includes("503") || /unavailable|overloaded|spikes in demand/i.test(message)) {
     return new Error(
-      `${model} is currently unavailable or overloaded (503 / demand spike). Your API key may still be valid — try Gemini 2.5 Flash or retry in a moment.`
+      `${model} is currently unavailable or overloaded (503 / demand spike). Your API key may still be valid — retry in a moment.`
     );
   }
   return new Error(`${model}: ${message}`);

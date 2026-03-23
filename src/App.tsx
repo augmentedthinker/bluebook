@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import CiteSource from './components/CiteSource';
 import SearchCite from './components/SearchCite';
 import ReferenceSources from './components/ReferenceSources';
 import ApiKeyManager from './components/ApiKeyManager';
-import ModelSelector from './components/ModelSelector';
-import { getSelectedModel, MODEL_OPTIONS, type GeminiModelId } from './services/gemini';
+import { FIXED_MODEL_LABEL } from './services/gemini';
 import { Scale, Search, PenTool } from 'lucide-react';
 
 type Tab = 'cite' | 'search';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('cite');
-  const [selectedModel, setSelectedModelState] = useState<GeminiModelId>(getSelectedModel());
-
-  useEffect(() => {
-    const sync = () => setSelectedModelState(getSelectedModel());
-    window.addEventListener('bluebook-model-changed', sync);
-    return () => window.removeEventListener('bluebook-model-changed', sync);
-  }, []);
-
-  const currentModel = MODEL_OPTIONS.find((model) => model.id === selectedModel);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
@@ -36,20 +26,19 @@ export default function App() {
                     Bluebook Citation Assistant
                   </h1>
                   <p className="text-sm text-slate-500 mt-0.5 break-words">
-                    Active model: <span className="font-semibold text-slate-700">{currentModel?.label}</span>
+                    Powered by <span className="font-semibold text-slate-700">{FIXED_MODEL_LABEL}</span>
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
-                <ModelSelector />
                 <ApiKeyManager />
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <p className="text-sm text-slate-600 max-w-3xl">
-                Toggle models to compare reliability and behavior. If one model throws a 503 demand-spike error, switch to another without leaving the app.
+                This app is now fixed to Gemini 3 Flash Preview so testing stays consistent and you can judge the app itself instead of model-switching behavior.
               </p>
 
               <nav className="flex space-x-1 bg-slate-100 p-1 rounded-xl w-fit">
